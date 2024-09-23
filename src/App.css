@@ -1,0 +1,138 @@
+@import url("https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100..800&display=swap");
+
+body {
+  font-family: "Playpen Sans", cursive;
+  background-color: #2f2b2b;
+  color: #fff;
+  text-align: center;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 5px;
+}
+
+.add-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.info-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+}
+input,
+button {
+  appearance: none;
+  outline: none;
+  border: 0;
+  border-radius: 5px;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  font-family: "Playpen Sans", cursive;
+}
+
+button {
+  font-weight: 600;
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+.add {
+  background-color: #73addf;
+  color: #fff;
+  font-weight: 600;
+  display: block;
+}
+
+.search-input {
+  width: 200px;
+}
+
+.search-table-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+table {
+  border-collapse: collapse;
+  color: #fff;
+  width: 100%;
+}
+table td,
+table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+  max-width: 350px;
+  word-break: break-word;
+  text-align: left;
+}
+
+table td {
+  font-size: 18px;
+  font-weight: 400;
+}
+
+table tr:hover {
+  background-color: #3f3c3c;
+}
+
+tr,
+th {
+  min-width: 100px;
+}
+
+table th {
+  padding: 12px 0 12px 5px;
+  text-align: left;
+  background-color: #04aa6d;
+  font-weight: 600;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.actions button {
+  text-transform: capitalize;
+  color: #fff;
+}
+.actions button.edit {
+  background-color: #73addf;
+}
+.actions button.delete {
+  background-color: lightcoral;
+}
+
+/* media queries */
+@media only screen and (max-width: 600px) {
+  tr,
+  th {
+    min-width: unset;
+  }
+
+  
+  table td {
+    font-size: 14px;
+  }
+
+  .actions {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  button {
+    margin: 3px 0;
+  }
+}
