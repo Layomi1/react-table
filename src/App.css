@@ -115,6 +115,20 @@ table th {
   background-color: lightcoral;
 }
 
+.pagination{
+  margin-top: 20px;
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+
+}
+.pagination button{
+  background: #fff;
+  color: black;
+}
+
+
+
 /* media queries */
 @media only screen and (max-width: 600px) {
   tr,

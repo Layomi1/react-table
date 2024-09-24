@@ -1,18 +1,30 @@
-import { useEffect } from "react";
-import { useState, useRef } from "react";
+import { useEffect, useState, useRef  } from "react";
 
 const DataTable = () => {
   const [formData, setFormData] = useState({ name: "", gender: "", age: "" });
   const [data, setData] = useState([]);
   const [editId, setEditId] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-
-  const filteredData = data.filter((item) => {
-   return item.name.toLowerCase().includes(searchTerm.toLowerCase());
-  });
+  const [currentPage, setCurrentPage] = useState(1);
 
   const outsideClick = useRef(false);
 
+  const itemsPerPage = 5;
+  const lastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = lastItem - itemsPerPage;
+  let filterItems = data.filter((item) => {
+    return item.name.toLowerCase().includes(searchTerm.toLowerCase());
+  });
+
+  const filteredData = filterItems.slice(indexOfFirstItem, lastItem);
+
+  // ?for searchtrem
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
+
+  // for edit
   useEffect(() => {
     if (!editId) return;
 
@@ -23,6 +35,8 @@ const DataTable = () => {
     }
   }, [editId]);
 
+
+  //  exiting edit mode
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (outsideClick.current && !outsideClick.current.contains(e.target)) {
@@ -55,6 +69,9 @@ const DataTable = () => {
 
   //  delete
   const handleDelete = (id) => {
+    if (filteredData.length === 1 && currentPage !== 1) {
+      setCurrentPage((prev) => prev - 1);
+    }
     const updatedList = data.filter((item) => item.id !== id);
     setData(updatedList);
   };
@@ -74,6 +91,11 @@ const DataTable = () => {
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
+
+  const paginate = (pageumber) => {
+    setCurrentPage(pageumber);
+  };
+
   return (
     <div className="container">
       <div className="add-container">
@@ -169,6 +191,22 @@ const DataTable = () => {
             ))}
           </tbody>
         </table>
+        <div className="pagination">
+          {Array.from(
+            { length: Math.ceil(filterItems.length / itemsPerPage) },
+            (_, index) => (
+              <button
+                key={index + 1}
+                onClick={() => paginate(index + 1)}
+                style={{
+                  backgroundColor: currentPage === index + 1 && "lightgreen",
+                }}
+              >
+                {index + 1}
+              </button>
+            )
+          )}
+        </div>
       </div>
     </div>
   );
