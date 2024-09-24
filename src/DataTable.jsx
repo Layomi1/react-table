@@ -1,8 +1,37 @@
-import { useState } from "react";
+import { useEffect } from "react";
+import { useState, useRef } from "react";
 
 const DataTable = () => {
   const [formData, setFormData] = useState({ name: "", gender: "", age: "" });
   const [data, setData] = useState([]);
+  const [editId, setEditId] = useState(false);
+  const outsideClick= useRef(false)
+
+  useEffect(() => {
+    if (!editId) return;
+
+    let selectedItem = document.querySelectorAll(`[id='${editId}']`);
+  
+    if (selectedItem && selectedItem.length > 0) {
+      selectedItem.focus()
+      
+
+    }
+  }, [editId]);
+  
+
+  useEffect(()=>{
+
+    const handleClickOutside= (e)=>{
+        if(outsideClick.current && !outsideClick.current.contains(e.target)){
+            setEditId(false)
+        }
+    }
+    document.addEventListener('click', handleClickOutside)
+    return()=>{
+        document.removeEventListener('click', handleClickOutside)
+    }
+  },[])
 
   const handleInputChange = (e) => {
     e.preventDefault();
@@ -21,6 +50,23 @@ const DataTable = () => {
       setFormData({ name: "", gender: "", age: "" });
     }
   };
+
+//  delte
+  const handleDelete = (id) => {
+    const updatedList = data.filter((item) => item.id !== id);
+    setData(updatedList);
+  };
+
+//   edit
+  const handleEdit = (id, updatedData) => {
+    if (!editId || editId !== id) return;
+
+    const updatedList = data.map((item) =>
+      item.id === id ? { ...item, ...updatedData } : item
+    );
+    setData(updatedList)
+  };
+  
 
   return (
     <div className="container">
@@ -65,7 +111,7 @@ const DataTable = () => {
           className="search-input"
         />
 
-        <table>
+        <table ref={outsideClick}>
           <thead>
             <tr>
               <th>Name</th>
@@ -77,13 +123,31 @@ const DataTable = () => {
           <tbody>
             {data.map((item) => (
               <tr key={item.id}>
-                <td>{item.name}</td>
-                <td>{item.gender}</td>
-                <td>{item.age}</td>
+                <td
+                   contentEditable={editId === item.id}
+                  onBlur={(e) =>
+                    handleEdit(item.id, { name: e.target.innerText })
+                  }
+                >{item.name}</td>
+                <td  contentEditable={editId === item.id} onBlur=
+                  {(e) => handleEdit(item.id, { gender: e.target.innerText })}>
+                  {item.gender} 
+                </td>
+                <td contentEditable={editId === item.id} onBlur=
+                  {(e) => handleEdit(item.id, { age: e.target.innerText })}>
+                  {item.age} 
+                </td>
 
                 <td className="actions">
-                  <button className="edit">Edit</button>
-                  <button className="delete">Delete</button>
+                  <button className="edit" onClick={() => setEditId(item.id)}>
+                    Edit
+                  </button>
+                  <button
+                    className="delete"
+                    onClick={() => handleDelete(item.id)}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
