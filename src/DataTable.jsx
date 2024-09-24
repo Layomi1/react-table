@@ -5,33 +5,35 @@ const DataTable = () => {
   const [formData, setFormData] = useState({ name: "", gender: "", age: "" });
   const [data, setData] = useState([]);
   const [editId, setEditId] = useState(false);
-  const outsideClick= useRef(false)
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredData = data.filter((item) => {
+   return item.name.toLowerCase().includes(searchTerm.toLowerCase());
+  });
+
+  const outsideClick = useRef(false);
 
   useEffect(() => {
     if (!editId) return;
 
     let selectedItem = document.querySelectorAll(`[id='${editId}']`);
-  
-    if (selectedItem && selectedItem.length > 0) {
-      selectedItem.focus()
-      
 
+    if (selectedItem && selectedItem.length > 0) {
+      selectedItem.focus();
     }
   }, [editId]);
-  
 
-  useEffect(()=>{
-
-    const handleClickOutside= (e)=>{
-        if(outsideClick.current && !outsideClick.current.contains(e.target)){
-            setEditId(false)
-        }
-    }
-    document.addEventListener('click', handleClickOutside)
-    return()=>{
-        document.removeEventListener('click', handleClickOutside)
-    }
-  },[])
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (outsideClick.current && !outsideClick.current.contains(e.target)) {
+        setEditId(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   const handleInputChange = (e) => {
     e.preventDefault();
@@ -51,23 +53,27 @@ const DataTable = () => {
     }
   };
 
-//  delte
+  //  delete
   const handleDelete = (id) => {
     const updatedList = data.filter((item) => item.id !== id);
     setData(updatedList);
   };
 
-//   edit
+  //   edit
   const handleEdit = (id, updatedData) => {
     if (!editId || editId !== id) return;
 
     const updatedList = data.map((item) =>
       item.id === id ? { ...item, ...updatedData } : item
     );
-    setData(updatedList)
+    setData(updatedList);
   };
-  
 
+  // handleSearch
+
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
   return (
     <div className="container">
       <div className="add-container">
@@ -106,8 +112,8 @@ const DataTable = () => {
           type="search"
           placeholder="Search"
           name="search"
-          value={""}
-          onChange={() => {}}
+          value={searchTerm}
+          onChange={handleSearch}
           className="search-input"
         />
 
@@ -121,21 +127,31 @@ const DataTable = () => {
             </tr>
           </thead>
           <tbody>
-            {data.map((item) => (
+            {filteredData.map((item) => (
               <tr key={item.id}>
                 <td
-                   contentEditable={editId === item.id}
+                  contentEditable={editId === item.id}
                   onBlur={(e) =>
                     handleEdit(item.id, { name: e.target.innerText })
                   }
-                >{item.name}</td>
-                <td  contentEditable={editId === item.id} onBlur=
-                  {(e) => handleEdit(item.id, { gender: e.target.innerText })}>
-                  {item.gender} 
+                >
+                  {item.name}
                 </td>
-                <td contentEditable={editId === item.id} onBlur=
-                  {(e) => handleEdit(item.id, { age: e.target.innerText })}>
-                  {item.age} 
+                <td
+                  contentEditable={editId === item.id}
+                  onBlur={(e) =>
+                    handleEdit(item.id, { gender: e.target.innerText })
+                  }
+                >
+                  {item.gender}
+                </td>
+                <td
+                  contentEditable={editId === item.id}
+                  onBlur={(e) =>
+                    handleEdit(item.id, { age: e.target.innerText })
+                  }
+                >
+                  {item.age}
                 </td>
 
                 <td className="actions">
